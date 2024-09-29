@@ -1,0 +1,328 @@
+{
+  "last_node_id": 78,
+  "last_link_id": 90,
+  "nodes": [
+    {
+      "id": 69,
+      "type": "MLXDecoder",
+      "pos": [
+        -1490,
+        836
+      ],
+      "size": {
+        "0": 229.20001220703125,
+        "1": 46
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 89,
+          "slot_index": 0
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 77
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            74
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MLXDecoder"
+      }
+    },
+    {
+      "id": 33,
+      "type": "EmptyLatentImage",
+      "pos": [
+        -2349,
+        940
+      ],
+      "size": {
+        "0": 315,
+        "1": 106
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            90
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        512,
+        512,
+        1
+      ]
+    },
+    {
+      "id": 78,
+      "type": "MLXSampler",
+      "pos": [
+        -1841,
+        490
+      ],
+      "size": {
+        "0": 315,
+        "1": 194
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 88
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 87
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 90,
+          "slot_index": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            89
+          ],
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MLXSampler"
+      },
+      "widgets_values": [
+        2102597265,
+        "randomize",
+        4,
+        0,
+        1
+      ]
+    },
+    {
+      "id": 70,
+      "type": "SaveImage",
+      "pos": [
+        -1098,
+        612
+      ],
+      "size": {
+        "0": 428.6328125,
+        "1": 499.91815185546875
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 74
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "ComfyUI"
+      ]
+    },
+    {
+      "id": 60,
+      "type": "MLXClipTextEncoder",
+      "pos": [
+        -2526,
+        430
+      ],
+      "size": {
+        "0": 400,
+        "1": 200
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 78
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            87
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MLXClipTextEncoder"
+      },
+      "widgets_values": [
+        "A sleek, elegant cat with a soft, glossy coat sits regally in the center of a modern living room. The cat's fur is a rich mix of charcoal gray with subtle stripes, and its emerald green eyes shine with curiosity and grace. The living room around it is spacious and minimalist, with clean lines and a neutral color palette. A large floor-to-ceiling window allows natural light to flood the room, illuminating the cat as it perches on a plush, contemporary sofa."
+      ]
+    },
+    {
+      "id": 73,
+      "type": "MLXLoadFlux",
+      "pos": [
+        -3081,
+        802
+      ],
+      "size": {
+        "0": 511.4536437988281,
+        "1": 98
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model_version",
+          "type": "SELECT",
+          "link": null,
+          "slot_index": 0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            88
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            77
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            78
+          ],
+          "shape": 3,
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MLXLoadFlux"
+      },
+      "widgets_values": [
+        "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized"
+      ]
+    }
+  ],
+  "links": [
+    [
+      74,
+      69,
+      0,
+      70,
+      0,
+      "IMAGE"
+    ],
+    [
+      77,
+      73,
+      1,
+      69,
+      1,
+      "VAE"
+    ],
+    [
+      78,
+      73,
+      2,
+      60,
+      0,
+      "CLIP"
+    ],
+    [
+      87,
+      60,
+      0,
+      78,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      88,
+      73,
+      0,
+      78,
+      0,
+      "MODEL"
+    ],
+    [
+      89,
+      78,
+      0,
+      69,
+      0,
+      "LATENT"
+    ],
+    [
+      90,
+      33,
+      0,
+      78,
+      2,
+      "LATENT"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5644739300537773,
+      "offset": [
+        3280.0737318149763,
+        72.09208702588728
+      ]
+    }
+  },
+  "version": 0.4
+}
