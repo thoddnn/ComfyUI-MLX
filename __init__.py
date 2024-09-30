@@ -9,7 +9,53 @@ from diffusionkit.mlx import load_t5_encoder, load_t5_tokenizer, load_tokenizer,
 from diffusionkit.mlx.clip import CLIPTextModel
 from diffusionkit.mlx.model_io import load_flux
 from diffusionkit.mlx import FluxPipeline
+import folder_paths
 import torch
+import os 
+
+class MLXSaveImage:
+    def __init__(self):
+        self.output_dir = folder_paths.get_output_directory()
+        self.type = "output"
+        self.prefix_append = ""
+        self.compress_level = 4
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": 
+                    {"image": ("IMAGE", ),
+                     "filename_prefix": ("STRING", {"default": "ComfyUI"})},
+                "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
+                }
+    
+    RETURN_TYPES = ()
+    OUTPUT_NODE = True
+    FUNCTION = "save_image"
+
+    def save_image(self, image, filename_prefix="ComfyUI", prompt=None, extra_pnginfo=None):
+        
+        full_output_folder, filename, counter, subfolder, filename_prefix = folder_paths.get_save_image_path(filename_prefix, self.output_dir, image[0].shape[1], image[0].shape[0])
+        
+        # Convert the decoded images to uint8
+        x = mx.concatenate(image, axis=0)
+        x = (x * 255).astype(mx.uint8)
+            
+        img = Image.fromarray(np.array(x))
+
+        filename = f"{filename}_{counter}_.png"
+
+        result = {
+                "filename": filename,
+                "subfolder": subfolder,
+                "type": self.type
+        }
+
+        save_path = f"{full_output_folder}{filename}"
+        
+        img.save(save_path , pnginfo=None, compress_level=self.compress_level)
+
+        return { "ui": { "images": [result] } } 
+
 
 class MLXDecoder:
     @classmethod
@@ -20,34 +66,14 @@ class MLXDecoder:
     FUNCTION = "decode"
     
     def decode(self, latent_image, vae):
+
         decoded = vae(latent_image)
         decoded = mx.clip(decoded / 2 + 0.5, 0, 1)
         
         mx.eval(decoded)
 
-        # Convert the decoded images to uint8
-        #x = mx.concatenate(decoded, axis=0)
-        #x = (x * 255).astype(mx.uint8)
+        return (decoded,)
 
-        # Convert MLX array to numpy array
-        numpy_array = np.array(decoded)
-
-        # Convert numpy array to PyTorch tensor
-        torch_tensor = torch.from_numpy(numpy_array)
-
-        # Ensure the tensor is float and in the range [0, 1]
-        torch_tensor = torch_tensor.float().clamp(0, 1)
-
-        # If the tensor is not in the format [batch, height, width, channels],
-        # you might need to permute it
-        if torch_tensor.shape[0] == 3:  # If it's in [channels, height, width] format
-            torch_tensor = torch_tensor.permute(1, 2, 0)
-
-        # Add a batch dimension if it's not present
-        if len(torch_tensor.shape) == 3:
-            torch_tensor = torch_tensor.unsqueeze(0)
-
-        return (torch_tensor,)
 
 
 class MLXSampler:
@@ -102,9 +128,11 @@ class MLXLoadFlux:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": {
-            "model_version": (["argmaxinc/mlx-FLUX.1-schnell", 
-                               "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized", 
-                               "argmaxinc/mlx-FLUX.1-dev"],)
+            "model_version": ([
+                        "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized",
+                        "argmaxinc/mlx-FLUX.1-schnell",  
+                        "argmaxinc/mlx-FLUX.1-dev"
+                        ],)
         }}
     
     RETURN_TYPES = ("MODEL", "VAE", "CLIP")
@@ -119,7 +147,7 @@ class MLXLoadFlux:
             "t5_model": model.t5_encoder,
             "t5_tokenizer": model.t5_tokenizer
         }
-
+        
         return (model, model.decoder, clip)
 
 
@@ -139,6 +167,8 @@ class MLXClipTextEncoder:
             pad_token = tokenizer.eos_token
         else:
             pad_token = 0
+
+        text = text.replace('’', '\'')
 
         # Tokenize the text
         tokens = [tokenizer.tokenize(text)]
@@ -226,7 +256,8 @@ NODE_CLASS_MAPPINGS = {
     "MLXClipTextEncoder": MLXClipTextEncoder,
     "MLXLoadFlux": MLXLoadFlux,
     "MLXSampler": MLXSampler,
-    "MLXDecoder": MLXDecoder
+    "MLXDecoder": MLXDecoder,
+    "MLXSaveImage": MLXSaveImage
 }
 
 # Node display name mappings
@@ -236,4 +267,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "MLXLoadFlux": "MLX Load Flux Model",
     "MLXSampler": "MLX Sampler",
     "MLXDecoder": "MLX Decoder",
+    "MLXSaveImage": "MLX Save Image"
 }
