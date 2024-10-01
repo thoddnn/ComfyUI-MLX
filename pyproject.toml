@@ -1,0 +1,14 @@
+[project]
+name = "comfyui-mlx"
+description = "Faster workflows for ComfyUI users on Mac with Apple silicon"
+version = "1.0.0"
+license = {file = "LICENSE"}
+
+[project.urls]
+Repository = "https://github.com/thoddnn/ComfyUI-MLX"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-MLX"
+Icon = ""
