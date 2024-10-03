@@ -24,9 +24,11 @@ A basic workflow is provided to help you start experimenting with the nodes.
 
 ## Why ComfyUI MLX Nodes?
 
-I started building these nodes because image generation from Flux models was taking too much time on my MacBook. After discovering DiffusionKit on X (Twitter), which showcased great performance for image generation on Apple Silicon, I decided to create a quick port of the library.
+I started building these nodes because image generation from Flux models was taking too much time on my MacBook. After discovering DiffusionKit on X, which showcased great performance for image generation on Apple Silicon, I decided to create a quick port of the library.
 
-The goal is to collaborate with other contributors to build a full suite of ComfyUI custom nodes optimized for Apple Silicon. Additionally, we aim to minimize the reliance on torch to take full advantage of future MLX improvements and further enhance performance.
+The goal is to collaborate with other contributors to build a full suite of ComfyUI custom nodes optimized for Apple Silicon. 
+
+Additionally, we aim to minimize the reliance on torch to take full advantage of future MLX improvements and further enhance performance.
 
 This will allow ComfyUI users on Mac with Apple Silicon to experience faster workflows.
 
@@ -40,8 +42,7 @@ Contributions are welcome! I'm open to best practices and suggestions and you’
 - Loading models from local file 
 - Build more MLX based nodes for common workflows
 - Add support for more sampler and scheduler
-- Add sampler and scheduler method 
-
+Pock
 ## License
 
 ComfyUI MLX Nodes is released under the MIT License. See [LICENSE](LICENSE) for more details.
@@ -49,7 +50,6 @@ ComfyUI MLX Nodes is released under the MIT License. See [LICENSE](LICENSE) for 
 ## Acknowledgements
 
 - [DiffusionKit](https://github.com/argmaxinc/DiffusionKit)
-
 
 ## Support
 

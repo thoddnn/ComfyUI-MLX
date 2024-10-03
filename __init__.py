@@ -12,6 +12,7 @@ from diffusionkit.mlx import FluxPipeline
 import folder_paths
 import torch
 import os 
+import gc
 
 class MLXSaveImage:
     def __init__(self):
@@ -75,7 +76,6 @@ class MLXDecoder:
         return (decoded,)
 
 
-
 class MLXSampler:
     @classmethod
     def INPUT_TYPES(s):
@@ -118,7 +118,6 @@ class MLXSampler:
         )
 
         mx.eval(latents)
-
         latents = latents.astype(m.activation_dtype)
 
         return (latents,)
@@ -138,10 +137,14 @@ class MLXLoadFlux:
     RETURN_TYPES = ("MODEL", "VAE", "CLIP")
     FUNCTION = "load_flux_model"
 
+    
+
     def load_flux_model(self, model_version):
+
         model = FluxPipeline(model_version=model_version, low_memory_mode=True)
 
         clip = {
+            "model_name": model_version,
             "clip_l_model": model.clip_l,
             "clip_l_tokenizer": model.tokenizer_l,
             "t5_model": model.t5_encoder,
@@ -159,6 +162,7 @@ class MLXClipTextEncoder:
     
     RETURN_TYPES = ("CONDITIONING",)
     FUNCTION = "encode"
+
 
     def _tokenize(self, tokenizer, text: str, negative_text: Optional[str] = None):
         if negative_text is None:
@@ -185,6 +189,14 @@ class MLXClipTextEncoder:
 
     def encode(self, clip, text):
 
+        T5_MAX_LENGTH = {
+            "argmaxinc/mlx-stable-diffusion-3-medium": 512,
+            "argmaxinc/mlx-FLUX.1-schnell": 256,
+            "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized": 256,
+            "argmaxinc/mlx-FLUX.1-dev": 512,
+        }
+
+        model_name = clip["model_name"]
         clip_l_encoder:CLIPTextModel = clip["clip_l_model"]
         clip_l_tokenizer:Tokenizer = clip["clip_l_tokenizer"]
         t5_encoder:SD3T5Encoder = clip["t5_model"]
@@ -201,7 +213,7 @@ class MLXClipTextEncoder:
         # T5 processing
         t5_tokens = self._tokenize(tokenizer=t5_tokenizer, text=text) 
 
-        padded_tokens_t5 = mx.zeros((1, 256)).astype(
+        padded_tokens_t5 = mx.zeros((1, T5_MAX_LENGTH[model_name])).astype(
             t5_tokens.dtype
         )
 
