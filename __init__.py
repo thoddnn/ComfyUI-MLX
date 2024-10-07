@@ -14,51 +14,8 @@ import torch
 import os 
 import gc
 
-class MLXSaveImage:
-    def __init__(self):
-        self.output_dir = folder_paths.get_output_directory()
-        self.type = "output"
-        self.prefix_append = ""
-        self.compress_level = 4
-
-    @classmethod
-    def INPUT_TYPES(s):
-        return {"required": 
-                    {"image": ("IMAGE", ),
-                     "filename_prefix": ("STRING", {"default": "ComfyUI"})},
-                "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
-                }
-    
-    RETURN_TYPES = ()
-    OUTPUT_NODE = True
-    FUNCTION = "save_image"
-
-    def save_image(self, image, filename_prefix="ComfyUI", prompt=None, extra_pnginfo=None):
-        
-        full_output_folder, filename, counter, subfolder, filename_prefix = folder_paths.get_save_image_path(filename_prefix, self.output_dir, image[0].shape[1], image[0].shape[0])
-        
-        # Convert the decoded images to uint8
-        x = mx.concatenate(image, axis=0)
-        x = (x * 255).astype(mx.uint8)
-            
-        img = Image.fromarray(np.array(x))
-
-        filename = f"{filename}_{counter}_.png"
-
-        result = {
-                "filename": filename,
-                "subfolder": subfolder,
-                "type": self.type
-        }
-
-        save_path = f"{full_output_folder}{filename}"
-        
-        img.save(save_path , pnginfo=None, compress_level=self.compress_level)
-
-        return { "ui": { "images": [result] } } 
-
-
 class MLXDecoder:
+
     @classmethod
     def INPUT_TYPES(s):
         return {"required": { "latent_image": ("LATENT", ), "vae": ("VAE", )}}
@@ -71,7 +28,22 @@ class MLXDecoder:
         decoded = vae(latent_image)
         decoded = mx.clip(decoded / 2 + 0.5, 0, 1)
 
-        return (decoded,)
+        mx.eval(decoded)
+ 
+        # Convert MLX tensor to numpy array
+        decoded_np = np.array(decoded.astype(mx.float16))
+
+        # Convert numpy array to PyTorch tensor
+        decoded_torch = torch.from_numpy(decoded_np).float()
+
+        # Ensure the tensor is in the correct format (B, C, H, W)
+        if decoded_torch.dim() == 3:
+            decoded_torch = decoded_torch.unsqueeze(0)
+        
+        # Ensure the values are in the range [0, 1]
+        decoded_torch = torch.clamp(decoded_torch, 0, 1)
+
+        return (decoded_torch,)
 
 
 class MLXSampler:
@@ -231,8 +203,7 @@ NODE_CLASS_MAPPINGS = {
     "MLXClipTextEncoder": MLXClipTextEncoder,
     "MLXLoadFlux": MLXLoadFlux,
     "MLXSampler": MLXSampler,
-    "MLXDecoder": MLXDecoder,
-    "MLXSaveImage": MLXSaveImage
+    "MLXDecoder": MLXDecoder
 }
 
 # Node display name mappings
@@ -240,6 +211,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "MLXClipTextEncoder": "MLX CLIP Text Encoder",
     "MLXLoadFlux": "MLX Load Flux Model",
     "MLXSampler": "MLX Sampler",
-    "MLXDecoder": "MLX Decoder",
-    "MLXSaveImage": "MLX Save Image"
+    "MLXDecoder": "MLX Decoder"
 }

@@ -1,67 +1,13 @@
 {
-  "last_node_id": 82,
-  "last_link_id": 100,
+  "last_node_id": 83,
+  "last_link_id": 101,
   "nodes": [
-    {
-      "id": 78,
-      "type": "MLXSampler",
-      "pos": [
-        -1858,
-        530
-      ],
-      "size": {
-        "0": 315,
-        "1": 194
-      },
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 88
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 96
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 90,
-          "slot_index": 2
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            97
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "MLXSampler"
-      },
-      "widgets_values": [
-        1458940752,
-        "randomize",
-        4,
-        0,
-        1
-      ]
-    },
     {
       "id": 80,
       "type": "MLXDecoder",
       "pos": [
-        -1457,
-        877
+        -1666,
+        1105
       ],
       "size": {
         "0": 229.20001220703125,
@@ -87,7 +33,7 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            100
+            101
           ],
           "shape": 3,
           "slot_index": 0
@@ -98,29 +44,27 @@
       }
     },
     {
-      "id": 82,
-      "type": "MLXSaveImage",
+      "id": 83,
+      "type": "SaveImage",
       "pos": [
-        -1180,
-        604
+        -1247,
+        512
       ],
-      "size": [
-        315,
-        270
-      ],
+      "size": {
+        "0": 564.33251953125,
+        "1": 423.1727294921875
+      },
       "flags": {},
       "order": 5,
       "mode": 0,
       "inputs": [
         {
-          "name": "image",
+          "name": "images",
           "type": "IMAGE",
-          "link": 100
+          "link": 101
         }
       ],
-      "properties": {
-        "Node name for S&R": "MLXSaveImage"
-      },
+      "properties": {},
       "widgets_values": [
         "ComfyUI"
       ]
@@ -129,8 +73,8 @@
       "id": 60,
       "type": "MLXClipTextEncoder",
       "pos": [
-        -2445,
-        533
+        -2490,
+        550
       ],
       "size": {
         "0": 400,
@@ -161,22 +105,56 @@
         "Node name for S&R": "MLXClipTextEncoder"
       },
       "widgets_values": [
-        "a photo of a cat"
+        "photo of a cat"
+      ]
+    },
+    {
+      "id": 33,
+      "type": "EmptyLatentImage",
+      "pos": [
+        -2420,
+        1010
+      ],
+      "size": {
+        "0": 315,
+        "1": 106
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            90
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        512,
+        512,
+        1
       ]
     },
     {
       "id": 73,
       "type": "MLXLoadFlux",
       "pos": [
-        -3104,
-        833
+        -3191,
+        784
       ],
       "size": {
         "0": 511.4536437988281,
         "1": 98
       },
       "flags": {},
-      "order": 0,
+      "order": 1,
       "mode": 0,
       "inputs": [
         {
@@ -223,36 +201,56 @@
       ]
     },
     {
-      "id": 33,
-      "type": "EmptyLatentImage",
+      "id": 78,
+      "type": "MLXSampler",
       "pos": [
-        -2349,
-        940
+        -2015,
+        785
       ],
       "size": {
         "0": 315,
-        "1": 106
+        "1": 194
       },
       "flags": {},
-      "order": 1,
+      "order": 3,
       "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 88
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 96
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 90,
+          "slot_index": 2
+        }
+      ],
       "outputs": [
         {
           "name": "LATENT",
           "type": "LATENT",
           "links": [
-            90
+            97
           ],
           "shape": 3,
           "slot_index": 0
         }
       ],
       "properties": {
-        "Node name for S&R": "EmptyLatentImage"
+        "Node name for S&R": "MLXSampler"
       },
       "widgets_values": [
-        512,
-        512,
+        1012,
+        "fixed",
+        4,
+        0,
         1
       ]
     }
@@ -307,10 +305,10 @@
       "LATENT"
     ],
     [
-      100,
+      101,
       80,
       0,
-      82,
+      83,
       0,
       "IMAGE"
     ]
@@ -321,8 +319,8 @@
       "bounding": [
         -3222,
         271,
-        2527,
-        1051
+        2746,
+        1141
       ],
       "color": "#3f789e",
       "font_size": 24,
@@ -332,10 +330,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.7400249944258194,
+      "scale": 0.6115909044841616,
       "offset": [
-        3099.7147462758894,
-        -284.2842423445222
+        3365.573769178294,
+        -145.52510641382105
       ]
     }
   },
