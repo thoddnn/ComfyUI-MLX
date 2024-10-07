@@ -40,9 +40,9 @@ Contributions are welcome! I'm open to best practices and suggestions and you’
 
 - SDXL models support
 - Loading models from local file 
-- Build more MLX based nodes for common workflows
+- Build more MLX based nodes for common workflows (based on your requests)
 - Add support for more sampler and scheduler
-Pock
+
 ## License
 
 ComfyUI MLX Nodes is released under the MIT License. See [LICENSE](LICENSE) for more details.

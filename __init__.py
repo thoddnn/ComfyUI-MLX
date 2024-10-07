@@ -70,8 +70,6 @@ class MLXDecoder:
 
         decoded = vae(latent_image)
         decoded = mx.clip(decoded / 2 + 0.5, 0, 1)
-        
-        mx.eval(decoded)
 
         return (decoded,)
 
@@ -100,13 +98,11 @@ class MLXSampler:
         num_steps = steps 
         cfg_weight = cfg
         
-        m:FluxPipeline = model
-
         batch, channels, height, width = latent_image["samples"].shape
         
         latent_size = (height, width)
         
-        latents, iter_time  = m.denoise_latents(
+        latents, iter_time  = model.denoise_latents(
             conditioning,
             pooled_conditioning,
             num_steps=num_steps,
@@ -117,8 +113,7 @@ class MLXSampler:
             denoise=denoise,
         )
 
-        mx.eval(latents)
-        latents = latents.astype(m.activation_dtype)
+        latents = latents.astype(model.activation_dtype)
 
         return (latents,)
 
@@ -137,11 +132,9 @@ class MLXLoadFlux:
     RETURN_TYPES = ("MODEL", "VAE", "CLIP")
     FUNCTION = "load_flux_model"
 
-    
-
     def load_flux_model(self, model_version):
 
-        model = FluxPipeline(model_version=model_version, low_memory_mode=True)
+        model = FluxPipeline(model_version=model_version, low_memory_mode=True, w16=True, a16=True)
 
         clip = {
             "model_name": model_version,
@@ -226,9 +219,6 @@ class MLXClipTextEncoder:
         # Use T5 embeddings as main conditioning
         conditioning = t5_embeddings
         
-        mx.eval(t5_embeddings)
-        mx.eval(clip_pooled_output)
-
         output = {
             "conditioning": t5_embeddings,
             "pooled_conditioning": clip_pooled_output
@@ -236,35 +226,8 @@ class MLXClipTextEncoder:
 
         return (output, ) 
 
-class MLXFluxCLIPLoader:
-    @classmethod
-    def INPUT_TYPES(s):
-        return {"required": {}}
-    
-    RETURN_TYPES = ("CLIP",)
-    FUNCTION = "load_flux_clip"
-    
-    def load_flux_clip(self):
-        
-        clip_l_tokenizer = load_tokenizer("argmaxinc/stable-diffusion", vocab_key="tokenizer_l_vocab", merges_key="tokenizer_l_merges")
-        clip_l_encoder = load_text_encoder("argmaxinc/stable-diffusion", model_key="clip_l")
-        
-        t5_tokenizer = load_t5_tokenizer(max_context_length=256)
-        t5_encoder = load_t5_encoder()
-
-        output = {
-            "clip_l_model": clip_l_encoder,
-            "clip_l_tokenizer": clip_l_tokenizer,
-            "t5_model": t5_encoder,
-            "t5_tokenizer": t5_tokenizer
-        }
-        
-        return (output,)
-
-
 # Node class mappings
 NODE_CLASS_MAPPINGS = {
-    "MLXFluxCLIPLoader": MLXFluxCLIPLoader,
     "MLXClipTextEncoder": MLXClipTextEncoder,
     "MLXLoadFlux": MLXLoadFlux,
     "MLXSampler": MLXSampler,
@@ -274,7 +237,6 @@ NODE_CLASS_MAPPINGS = {
 
 # Node display name mappings
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "MLXFluxCLIPLoader": "MLX Flux CLIP Loader",
     "MLXClipTextEncoder": "MLX CLIP Text Encoder",
     "MLXLoadFlux": "MLX Load Flux Model",
     "MLXSampler": "MLX Sampler",
