@@ -16,6 +16,11 @@ pip install -e .
 ```
 
 2. Install the MLX nodes:
+    
+ - In ComfyUI, Manager > Custom Nodes Manager > Tap 'ComfyUI MLX' > Click Install 
+
+ OR 
+ 
  - In ComfyUI, Manager > Install via Git URL > https://github.com/thoddnn/ComfyUI-MLX.git
 
 ## Getting Started
@@ -38,10 +43,13 @@ Contributions are welcome! I'm open to best practices and suggestions and you’
 
 ## Future Plans
 
-- SDXL models support
 - Loading models from local file 
+- SDXL models support
+- ControlNet support
+- LoRA support 
+- LLM and VLM nodes
+- CogXVideo models support  
 - Build more MLX based nodes for common workflows (based on your requests)
-- Add support for more sampler and scheduler
 
 ## License
 
