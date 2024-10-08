@@ -9,6 +9,6 @@ Repository = "https://github.com/thoddnn/ComfyUI-MLX"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "thoddnn"
 DisplayName = "ComfyUI-MLX"
 Icon = ""
