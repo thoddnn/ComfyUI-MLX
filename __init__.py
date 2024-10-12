@@ -3,12 +3,13 @@ import PIL.Image
 import mlx.core as mx
 from typing import Optional, Tuple
 from PIL import Image
-from diffusionkit.mlx.tokenizer import Tokenizer, T5Tokenizer
-from diffusionkit.mlx.t5 import SD3T5Encoder
-from diffusionkit.mlx import load_t5_encoder, load_t5_tokenizer, load_tokenizer, load_text_encoder
-from diffusionkit.mlx.clip import CLIPTextModel
-from diffusionkit.mlx.model_io import load_flux
-from diffusionkit.mlx import FluxPipeline
+
+from .diffusionkit.mlx.tokenizer import Tokenizer, T5Tokenizer
+from .diffusionkit.mlx.t5 import SD3T5Encoder
+from .diffusionkit.mlx import load_t5_encoder, load_t5_tokenizer, load_tokenizer, load_text_encoder
+from .diffusionkit.mlx.clip import CLIPTextModel
+from .diffusionkit.mlx.model_io import load_flux
+from .diffusionkit.mlx import FluxPipeline
 import folder_paths
 import torch
 import os 
