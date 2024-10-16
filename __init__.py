@@ -19,14 +19,14 @@ class MLXDecoder:
 
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": { "latent_image": ("LATENT", ), "vae": ("VAE", )}}
+        return {"required": { "latent_image": ("LATENT", ), "mlx_vae": ("mlx_vae", )}}
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "decode"
     
-    def decode(self, latent_image, vae):
+    def decode(self, latent_image, mlx_vae):
 
-        decoded = vae(latent_image)
+        decoded = mlx_vae(latent_image)
         decoded = mx.clip(decoded / 2 + 0.5, 0, 1)
 
         mx.eval(decoded)
@@ -51,11 +51,11 @@ class MLXSampler:
     @classmethod
     def INPUT_TYPES(s):
         return {"required":
-            {"model": ("MODEL",),
+            {"mlx_model": ("mlx_model",),
             "seed": ("INT", {"default": 0, "min": 0, "max": 2**32 - 1}),
             "steps": ("INT", {"default": 4, "min": 1, "max": 10000}),
             "cfg": ("FLOAT", {"default": 0, "min": 0.0, "max": 100.0, "step":0.1, "round": 0.01}),
-            "positive": ("CONDITIONING", ),
+            "mlx_positive_conditioning": ("mlx_conditioning", ),
             "latent_image": ("LATENT", ),
             "denoise": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
                 }
@@ -64,18 +64,18 @@ class MLXSampler:
     RETURN_TYPES = ("LATENT",)
     FUNCTION = "generate_image"
 
-    def generate_image(self, model, seed, steps, cfg, positive, latent_image, denoise): 
+    def generate_image(self, mlx_model, seed, steps, cfg, mlx_positive_conditioning, latent_image, denoise): 
         
-        conditioning = positive["conditioning"]
-        pooled_conditioning = positive["pooled_conditioning"]
+        conditioning = mlx_positive_conditioning["conditioning"]
+        pooled_conditioning = mlx_positive_conditioning["pooled_conditioning"]
         num_steps = steps 
         cfg_weight = cfg
-        
+            
         batch, channels, height, width = latent_image["samples"].shape
         
         latent_size = (height, width)
         
-        latents, iter_time  = model.denoise_latents(
+        latents, iter_time  = mlx_model.denoise_latents(
             conditioning,
             pooled_conditioning,
             num_steps=num_steps,
@@ -86,7 +86,7 @@ class MLXSampler:
             denoise=denoise,
         )
 
-        latents = latents.astype(model.activation_dtype)
+        latents = latents.astype(mlx_model.activation_dtype)
 
         return (latents,)
 
@@ -102,7 +102,7 @@ class MLXLoadFlux:
                         ],)
         }}
     
-    RETURN_TYPES = ("MODEL", "VAE", "CLIP")
+    RETURN_TYPES = ("mlx_model", "mlx_vae", "mlx_conditioning")
     FUNCTION = "load_flux_model"
 
     def load_flux_model(self, model_version):
@@ -124,9 +124,10 @@ class MLXClipTextEncoder:
 
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {"text": ("STRING", {"multiline": True, "dynamicPrompts": True}), "clip": ("CLIP", )}}
+        return {"required": {"text": ("STRING", {"multiline": True, "dynamicPrompts": True}), "mlx_conditioning": ("mlx_conditioning", {"forceInput":True})}}
     
-    RETURN_TYPES = ("CONDITIONING",)
+
+    RETURN_TYPES = ("mlx_conditioning",)
     FUNCTION = "encode"
 
 
@@ -153,7 +154,7 @@ class MLXClipTextEncoder:
 
         return tokens
 
-    def encode(self, clip, text):
+    def encode(self, mlx_conditioning, text):
 
         T5_MAX_LENGTH = {
             "argmaxinc/mlx-stable-diffusion-3-medium": 512,
@@ -162,11 +163,11 @@ class MLXClipTextEncoder:
             "argmaxinc/mlx-FLUX.1-dev": 512,
         }
 
-        model_name = clip["model_name"]
-        clip_l_encoder:CLIPTextModel = clip["clip_l_model"]
-        clip_l_tokenizer:Tokenizer = clip["clip_l_tokenizer"]
-        t5_encoder:SD3T5Encoder = clip["t5_model"]
-        t5_tokenizer:T5Tokenizer = clip["t5_tokenizer"]
+        model_name = mlx_conditioning["model_name"]
+        clip_l_encoder:CLIPTextModel = mlx_conditioning["clip_l_model"]
+        clip_l_tokenizer:Tokenizer = mlx_conditioning["clip_l_tokenizer"]
+        t5_encoder:SD3T5Encoder = mlx_conditioning["t5_model"]
+        t5_tokenizer:T5Tokenizer = mlx_conditioning["t5_tokenizer"]
 
         # CLIP processing
         clip_tokens = self._tokenize(tokenizer=clip_l_tokenizer, text=text) 
@@ -210,7 +211,7 @@ NODE_CLASS_MAPPINGS = {
 # Node display name mappings
 NODE_DISPLAY_NAME_MAPPINGS = {
     "MLXClipTextEncoder": "MLX CLIP Text Encoder",
-    "MLXLoadFlux": "MLX Load Flux Model",
+    "MLXLoadFlux": "MLX Load Flux Model from HF 🤗",
     "MLXSampler": "MLX Sampler",
     "MLXDecoder": "MLX Decoder"
 }

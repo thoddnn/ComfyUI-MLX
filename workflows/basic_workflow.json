@@ -1,13 +1,67 @@
 {
-  "last_node_id": 83,
-  "last_link_id": 101,
+  "last_node_id": 8,
+  "last_link_id": 7,
   "nodes": [
     {
-      "id": 80,
+      "id": 4,
+      "type": "MLXSampler",
+      "pos": [
+        1129.78515625,
+        298.15234375
+      ],
+      "size": {
+        "0": 315,
+        "1": 194
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mlx_model",
+          "type": "mlx_model",
+          "link": 3
+        },
+        {
+          "name": "mlx_positive",
+          "type": "mlx_conditioning",
+          "link": 2
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 5,
+          "slot_index": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            6
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MLXSampler"
+      },
+      "widgets_values": [
+        1462967176,
+        "randomize",
+        4,
+        0,
+        1
+      ]
+    },
+    {
+      "id": 5,
       "type": "MLXDecoder",
       "pos": [
-        -1666,
-        1105
+        1624.08203125,
+        244.5
       ],
       "size": {
         "0": 229.20001220703125,
@@ -20,12 +74,12 @@
         {
           "name": "latent_image",
           "type": "LATENT",
-          "link": 97
+          "link": 6
         },
         {
-          "name": "vae",
-          "type": "VAE",
-          "link": 95
+          "name": "mlx_vae",
+          "type": "mlx_vae",
+          "link": 4
         }
       ],
       "outputs": [
@@ -33,7 +87,7 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            101
+            7
           ],
           "shape": 3,
           "slot_index": 0
@@ -44,16 +98,16 @@
       }
     },
     {
-      "id": 83,
+      "id": 7,
       "type": "SaveImage",
       "pos": [
-        -1247,
-        512
+        1938,
+        205
       ],
-      "size": {
-        "0": 564.33251953125,
-        "1": 423.1727294921875
-      },
+      "size": [
+        457.3671875,
+        406.68359375
+      ],
       "flags": {},
       "order": 5,
       "mode": 0,
@@ -61,7 +115,7 @@
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 101
+          "link": 7
         }
       ],
       "properties": {},
@@ -70,14 +124,14 @@
       ]
     },
     {
-      "id": 60,
+      "id": 3,
       "type": "MLXClipTextEncoder",
       "pos": [
-        -2490,
-        550
+        627,
+        157
       ],
       "size": {
-        "0": 400,
+        "0": 418.1999816894531,
         "1": 200
       },
       "flags": {},
@@ -85,17 +139,17 @@
       "mode": 0,
       "inputs": [
         {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 78
+          "name": "mlx_conditioning",
+          "type": "mlx_conditioning",
+          "link": 1
         }
       ],
       "outputs": [
         {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
+          "name": "mlx_conditioning",
+          "type": "mlx_conditioning",
           "links": [
-            96
+            2
           ],
           "shape": 3,
           "slot_index": 0
@@ -109,11 +163,11 @@
       ]
     },
     {
-      "id": 33,
+      "id": 6,
       "type": "EmptyLatentImage",
       "pos": [
-        -2420,
-        1010
+        667,
+        536
       ],
       "size": {
         "0": 315,
@@ -127,10 +181,9 @@
           "name": "LATENT",
           "type": "LATENT",
           "links": [
-            90
+            5
           ],
-          "shape": 3,
-          "slot_index": 0
+          "shape": 3
         }
       ],
       "properties": {
@@ -143,51 +196,43 @@
       ]
     },
     {
-      "id": 73,
+      "id": 2,
       "type": "MLXLoadFlux",
       "pos": [
-        -3191,
-        784
+        227,
+        426
       ],
       "size": {
-        "0": 511.4536437988281,
+        "0": 315,
         "1": 98
       },
       "flags": {},
       "order": 1,
       "mode": 0,
-      "inputs": [
-        {
-          "name": "model_version",
-          "type": "SELECT",
-          "link": null,
-          "slot_index": 0
-        }
-      ],
       "outputs": [
         {
-          "name": "MODEL",
-          "type": "MODEL",
+          "name": "mlx_model",
+          "type": "mlx_model",
           "links": [
-            88
+            3
           ],
           "shape": 3,
           "slot_index": 0
         },
         {
-          "name": "VAE",
-          "type": "VAE",
+          "name": "mlx_vae",
+          "type": "mlx_vae",
           "links": [
-            95
+            4
           ],
           "shape": 3,
           "slot_index": 1
         },
         {
-          "name": "CLIP",
-          "type": "CLIP",
+          "name": "mlx_conditioning",
+          "type": "mlx_conditioning",
           "links": [
-            78
+            1
           ],
           "shape": 3,
           "slot_index": 2
@@ -199,141 +244,74 @@
       "widgets_values": [
         "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized"
       ]
-    },
-    {
-      "id": 78,
-      "type": "MLXSampler",
-      "pos": [
-        -2015,
-        785
-      ],
-      "size": {
-        "0": 315,
-        "1": 194
-      },
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 88
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 96
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 90,
-          "slot_index": 2
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            97
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "MLXSampler"
-      },
-      "widgets_values": [
-        1012,
-        "fixed",
-        4,
-        0,
-        1
-      ]
     }
   ],
   "links": [
     [
-      78,
-      73,
+      1,
       2,
-      60,
+      2,
+      3,
       0,
-      "CLIP"
+      "mlx_conditioning"
     ],
     [
-      88,
-      73,
+      2,
+      3,
       0,
-      78,
-      0,
-      "MODEL"
+      4,
+      1,
+      "mlx_conditioning"
     ],
     [
-      90,
-      33,
+      3,
+      2,
       0,
-      78,
+      4,
+      0,
+      "mlx_model"
+    ],
+    [
+      4,
+      2,
+      1,
+      5,
+      1,
+      "mlx_vae"
+    ],
+    [
+      5,
+      6,
+      0,
+      4,
       2,
       "LATENT"
     ],
     [
-      95,
-      73,
-      1,
-      80,
-      1,
-      "VAE"
-    ],
-    [
-      96,
-      60,
+      6,
+      4,
       0,
-      78,
-      1,
-      "CONDITIONING"
-    ],
-    [
-      97,
-      78,
-      0,
-      80,
+      5,
       0,
       "LATENT"
     ],
     [
-      101,
-      80,
+      7,
+      5,
       0,
-      83,
+      7,
       0,
       "IMAGE"
     ]
   ],
-  "groups": [
-    {
-      "title": "MLX",
-      "bounding": [
-        -3222,
-        271,
-        2746,
-        1141
-      ],
-      "color": "#3f789e",
-      "font_size": 24,
-      "locked": false
-    }
-  ],
+  "groups": [],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6115909044841616,
+      "scale": 0.683013455365071,
       "offset": [
-        3365.573769178294,
-        -145.52510641382105
+        338.2328210819245,
+        211.20238110493608
       ]
     }
   },
