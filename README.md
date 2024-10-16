@@ -4,18 +4,7 @@ Faster workflows for ComfyUI users on Mac with Apple silicon
 
 ## Installation
 
-1. First, install the DiffusionKit library:
-
-```bash
-conda create -n comfy_mlx python=3.11 -y
-conda activate comfy_mlx
-cd /path/to/your_folder
-git clone https://github.com/argmaxinc/DiffusionKit
-cd DiffusionKit
-pip install -e .
-```
-
-2. Install the MLX nodes:
+1. Install the MLX nodes from the Custom Nodes Manager:
     
  - In ComfyUI, Manager > Custom Nodes Manager > Tap 'ComfyUI MLX' > Click Install 
 
@@ -23,15 +12,39 @@ pip install -e .
  
  - In ComfyUI, Manager > Install via Git URL > https://github.com/thoddnn/ComfyUI-MLX.git
 
+## Performances 
+
+![ComfyUI-MLX benchmark](./data/benchmark.png)
+
+Given the following environment: 
+
+- Device: MacBook M2 Max, 96 GB
+
+- Model: Flux 1.0 dev (not quantized)
+
+- Size: 512x512
+
+- Prompt: Photo of a cat
+
+- Steps: 10
+
+I get approximatively:
+
+- 70% faster when the model needs to be loaded
+
+- 35% faster when the model is loaded
+
+- 30% lower memory usage
+
 ## Getting Started
 
-A basic workflow is provided to help you start experimenting with the nodes.
+A basic workflow is provided to help you start experimenting with the nodes [here](./workflows/basic_workflow.json).
 
 ## Why ComfyUI MLX Nodes?
 
-I started building these nodes because image generation from Flux models was taking too much time on my MacBook. After discovering DiffusionKit on X, which showcased great performance for image generation on Apple Silicon, I decided to create a quick port of the library.
+I started building these nodes because image generation from Flux models was taking too much time on my MacBook. After discovering DiffusionKit on X, which showcased great performance for image generation on Apple Silicon, I decided to create a quick port of the library into ComfyUI.
 
-The goal is to collaborate with other contributors to build a full suite of ComfyUI custom nodes optimized for Apple Silicon. 
+The goal is to collaborate with other contributors to build a full suite of custom nodes optimized for Apple Silicon. 
 
 Additionally, we aim to minimize the reliance on torch to take full advantage of future MLX improvements and further enhance performance.
 
