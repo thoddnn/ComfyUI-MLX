@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-mlx"
 description = "Faster workflows for ComfyUI users on Mac with Apple silicon"
-version = "1.0.2"
+version = "1.0.3"
 license = {file = "LICENSE"}
 
 [project.urls]

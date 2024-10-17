@@ -105,7 +105,21 @@ class MLXLoadFlux:
     RETURN_TYPES = ("mlx_model", "mlx_vae", "mlx_conditioning")
     FUNCTION = "load_flux_model"
 
+    def check_model_folder(self, filename):
+
+        home_dir = os.path.expanduser("~")
+        formatted_filename = filename.replace("/", "--")
+        folder_path = os.path.join(home_dir, ".cache/huggingface/hub/models--" + formatted_filename)
+        
+        if os.path.exists(folder_path):
+            print("Found existing model folder, verifying download...")
+        else:
+            print("Model folder not found, downloading from HuggingFace... 🤗")
+
+
     def load_flux_model(self, model_version):
+
+        self.check_model_folder(model_version)
 
         model = FluxPipeline(model_version=model_version, low_memory_mode=True, w16=True, a16=True)
 
@@ -117,7 +131,11 @@ class MLXLoadFlux:
             "t5_tokenizer": model.t5_tokenizer
         }
         
+        print("Model successfully loaded.")
+
         return (model, model.decoder, clip)
+    
+
 
 
 class MLXClipTextEncoder: 
